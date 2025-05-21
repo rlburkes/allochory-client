@@ -135,7 +135,7 @@ function App() {
           <div>
             {messages.map((msg, i) => (
               <div key={i} className="text-sm">
-                <span className="font-semibold text-blue-600">{msg.name}</span>: {msg.data.text}
+                <span className="font-semibold text-blue-600">{msg.data.from ?? msg.data.sender ?? msg.name}</span>: {msg.data.text}
               </div>
             ))}
           </div>
