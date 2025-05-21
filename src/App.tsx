@@ -131,57 +131,16 @@ function App() {
 
       <div className="flex flex-row gap-6">
         {/* Left Column: 2/3 */}
-        <div className="flex-1 space-y-4">
-          <div className="bg-gray-50 border rounded p-4 h-64 overflow-auto space-y-2 text-black">
+        <div className="w-2/3 bg-gray-50 border rounded p-4 h-64 overflow-auto space-y-2 text-black flex flex-col-reverse">
+          <div>
             {messages.map((msg, i) => (
               <div key={i} className="text-sm">
                 <span className="font-semibold text-blue-600">{msg.name}</span>: {msg.data.text}
               </div>
             ))}
           </div>
-
-          <div className="flex gap-2">
-            <input
-              className="border p-2 flex-1 rounded"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type a message…"
-            />
-
-            <button
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-              onClick={() => {
-                // Normal message (not LLM)
-                channelRef.current?.publish(import.meta.env.VITE_ABLY_CLIENT_ID, {
-                  text: input,
-                  from: import.meta.env.VITE_ABLY_CLIENT_ID,
-                  timestamp: Date.now(),
-                });
-                setInput('');
-              }}
-            >
-              Send
-            </button>
-
-            <button
-              className="bg-purple-600 text-white px-4 py-2 rounded"
-              onClick={() => {
-                // LLM-invoke message
-                channelRef.current?.publish('Agent-Request:', {
-                  type: 'invoke',
-                  tool: 'summarize',
-                  input: { text: input },
-                  from: import.meta.env.VITE_ABLY_CLIENT_ID,
-                  to: 'agent:ollama',
-                  conversation_id: crypto.randomUUID(),
-                });
-                setInput('');
-              }}
-            >
-              🧠 Invoke LLM
-            </button>
-          </div>
         </div>
+
 
         {/* Right Column: 1/3 */}
         <div className="w-1/3 bg-white border rounded p-4 h-64 overflow-auto text-black">
@@ -194,6 +153,48 @@ function App() {
             ))}
           </ul>
         </div>
+      </div>
+
+      <div className="flex gap-2">
+        <textarea
+          className="border p-2 flex-1 rounded"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message…"
+        />
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          onClick={() => {
+            // Normal message (not LLM)
+            channelRef.current?.publish(import.meta.env.VITE_ABLY_CLIENT_ID, {
+              text: input,
+              from: import.meta.env.VITE_ABLY_CLIENT_ID,
+              timestamp: Date.now(),
+            });
+            setInput('');
+          }}
+        >
+          Send
+        </button>
+
+        <button
+          className="bg-purple-600 text-white px-4 py-2 rounded"
+          onClick={() => {
+            // LLM-invoke message
+            channelRef.current?.publish('Agent-Request:', {
+              type: 'invoke',
+              tool: 'summarize',
+              input: { text: input },
+              from: import.meta.env.VITE_ABLY_CLIENT_ID,
+              to: 'agent:ollama',
+              conversation_id: crypto.randomUUID(),
+            });
+            setInput('');
+          }}
+        >
+          🧠 Invoke LLM
+        </button>
       </div>
     </div>
   );
