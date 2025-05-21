@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     const client = new Ably.Realtime({
       key: import.meta.env.VITE_ABLY_API_KEY,
-      clientId: 'randy-dev',
+      clientId: import.meta.env.VITE_ABLY_CLIENT_ID,
     });
 
     client.connection.on('connected', () => {
@@ -30,7 +30,7 @@ function App() {
 
        // 💠 Enter presence with agent info
       channel.presence.enter({
-        agent_id: 'randy-dev',
+        agent_id: import.meta.env.VITE_ABLY_CLIENT_ID,
         tools: ['summarize', 'classify'],
         status: 'available',
       });
@@ -41,7 +41,7 @@ function App() {
       });
 
       // Optional greeting on connect
-      channel.publish('greeting', { text: 'Hello from Randy!' });
+      channel.publish('greeting', { text: `Hello from ${import.meta.env.VITE_ABLY_CLIENT_ID}!` });
     });
 
     return () => {
@@ -55,7 +55,7 @@ function App() {
 
     channelRef.current?.publish('user-message', {
       text,
-      from: 'randy-dev',
+      from: import.meta.env.VITE_ABLY_CLIENT_ID,
       timestamp: Date.now(),
     });
     setInput('');
